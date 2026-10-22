@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TerraVita AquaTwin: Ujani Reservoir Demo</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+         color: #222; background: #f4f6f8; }
+  header { background: #0b4f6c; color: #fff; padding: 12px 18px; }
+  header h1 { margin: 0; font-size: 1.2rem; }
+  header p { margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9; }
+
+  main { display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px; padding: 14px;
+         max-width: 1400px; margin: 0 auto; }
+
+  #map { height: 480px; border-radius: 8px; border: 1px solid #ccd; }
+  .slider-box { background: #fff; border-radius: 8px; padding: 12px 14px; margin-top: 12px;
+                border: 1px solid #ddd; }
+  .slider-box input[type=range] { width: 100%; margin: 8px 0; }
+  .readout { font-size: 0.95rem; }
+  .note { font-size: 0.82rem; color: #555; margin: 6px 0 0; }
+  .warn { color: #8a5a00; }
+
+  .card { background: #fff; border-radius: 8px; padding: 12px 14px; border: 1px solid #ddd;
+          margin-bottom: 12px; }
+  .card h3 { margin: 0 0 8px; font-size: 1rem; }
+  .chart-wrap { position: relative; height: 210px; }
+
+  details.card summary { cursor: pointer; font-weight: 600; }
+  details.card h4 { margin: 12px 0 4px; font-size: 0.95rem; }
+  details.card ul { margin: 4px 0 0 18px; padding: 0; font-size: 0.88rem; }
+  details.card li { margin-bottom: 4px; }
+  details.card p, details.card dd { font-size: 0.88rem; margin: 2px 0; }
+  .assumption-row { display: flex; justify-content: space-between; gap: 10px; font-size: 0.88rem;
+                    border-bottom: 1px dotted #ddd; padding: 3px 0; }
+
+  #error { display: none; background: #fdecea; color: #611; padding: 12px; margin: 14px;
+           border-radius: 8px; border: 1px solid #f5c2c0; }
+
+  @media (max-width: 860px) {
+    main { grid-template-columns: 1fr; }
+    #map { height: 340px; }
+    .chart-wrap { height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>TerraVita AquaTwin: Ujani Reservoir (demo)</h1>
+  <p>Satellite water extent, rainfall context, and a simplified water-balance twin. Demo built on public data with placeholder assumptions.</p>
+</header>
+
+<div id="error"></div>
+
+<main>
+  <section>
+    <div id="map"></div>
+    <div class="slider-box">
+      <div>Month: <strong id="month-label">-</strong></div>
+      <input type="range" id="month-slider" min="0" max="0" value="0" step="1">
+      <div class="readout" id="readout"></div>
+      <p class="note">The map shows the water polygon for exported months. Other months show chart values only.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h3>Water extent (km²)</h3>
+      <div class="chart-wrap"><canvas id="chart-water"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h3>Monthly rainfall (mm, catchment average)</h3>
+      <div class="chart-wrap"><canvas id="chart-rain"></canvas></div>
+    </div>
+
+    <div class="card">
+      <h3>Storage: twin baseline (next 6 months)</h3>
+      <div class="chart-wrap"><canvas id="chart-storage"></canvas></div>
+      <p class="note" id="storage-note"></p>
+    </div>
+
+    <details class="card" id="meta">
+      <summary>Data, method, assumptions, and limits</summary>
+      <div id="meta-body">Loading...</div>
+    </details>
+  </section>
+</main>
+
+<script>
+// ---------- Helpers ----------
+const $ = (id) => document.getElementById(id);
+
+function el(tag, text, cls) {
+  const e = document.createElement(tag);
+  if (text !== undefined && text !== null) e.textContent = text;
+  if (cls) e.className = cls;
+  return e;
+}
+
+function showError(msg) {
+  const box = $('error');
+  box.textContent = msg;
+  box.style.display = 'block';
+}
+
+// Simple CSV parser: the exported files contain no quoted commas
+async function loadCSV(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(`Could not load ${path} (${res.status})`);
+  const text = await res.text();
+  const [head, ...lines] = text.trim().split(/\r?\n/);
+  const cols = head.split(',');
+  return lines.map(line => {
+    const vals = line.split(',');
+    const row = {};
+    cols.forEach((c, i) => {
+      const v = vals[i];
+      if (v === undefined || v === '') row[c] = null;
+      else row[c] = isNaN(v) ? v : Number(v);
+    });
+    return row;
+  });
+}
+
+// Vertical marker line that follows the slider on each chart
+const markerPlugin = {
+  id: 'marker',
+  afterDraw(chart) {
+    const cfg = chart.options.plugins.marker;
+    const idx = cfg ? cfg.index : -1;
+    if (idx == null || idx < 0) return;
+    const meta = chart.getDatasetMeta(0);
+    const pt = meta.data[idx];
+    if (!pt) return;
+    const { ctx, chartArea } = chart;
+    ctx.save();
+    ctx.beginPath();
+    ctx.setLineDash([4, 4]);
+    ctx.moveTo(pt.x, chartArea.top);
+    ctx.lineTo(pt.x, chartArea.bottom);
+    ctx.strokeStyle = '#333';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+};
+Chart.register(markerPlugin);
+
+const baseChartOpts = (extra = {}) => ({
+  responsive: true,
+  maintainAspectRatio: false,
+  interaction: { mode: 'index', intersect: false },
+  plugins: { legend: { labels: { boxWidth: 12, font: { size: 11 } } } },
+  scales: {
+    x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } },
+    y: { ticks: { font: { size: 10 } } }
+  },
+  ...extra
+});
+
+// ---------- Main ----------
+async function main() {
+  // 1. Load data
+  const [water, rain, storage, forecast, meta, study] = await Promise.all([
+    loadCSV('data/water_extent_monthly.csv'),
+    loadCSV('data/model_dataset.csv'),
+    loadCSV('data/twin_baseline.csv'),
+    loadCSV('data/forecast_6month.csv'),
+    fetch('metadata.json').then(r => r.json()),
+    fetch('geo/study_area.geojson').then(r => r.json())
+  ]);
+  const polygons = await fetch('geo/water_extent_polygons.geojson').then(r => r.json());
+
+  // 2. Map
+  const map = L.map('map').setView([18.0, 75.1], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  const studyLayer = L.geoJSON(study, {
+    style: { color: '#d62728', weight: 2, fillOpacity: 0 }
+  }).addTo(map);
+  map.fitBounds(studyLayer.getBounds(), { padding: [10, 10] });
+
+  // One layer per exported month; only the selected month is shown
+  const polyGroup = L.featureGroup().addTo(map);
+  const polyByMonth = {};
+  polygons.features.forEach(f => {
+    polyByMonth[f.properties.month] = L.geoJSON(f, {
+      style: { color: '#1f78b4', weight: 1, fillColor: '#1f78b4', fillOpacity: 0.5 }
+    });
+  });
+
+  // 3. Water-extent chart (Sentinel-2 and Sentinel-1)
+  const waterMonths = water.map(r => r.month);
+  const waterChart = new Chart($('chart-water'), {
+    type: 'line',
+    data: {
+      labels: waterMonths,
+      datasets: [
+        { label: 'Sentinel-2 (optical)', data: water.map(r => r.s2_water_km2),
+          borderColor: '#1f78b4', backgroundColor: '#1f78b4', pointRadius: 2, spanGaps: true, tension: 0.2 },
+        { label: 'Sentinel-1 (radar)', data: water.map(r => r.s1_water_km2),
+          borderColor: '#33a02c', backgroundColor: '#33a02c', pointRadius: 2, spanGaps: true, tension: 0.2 }
+      ]
+    },
+    options: baseChartOpts({ plugins: { marker: { index: -1 },
+      legend: { labels: { boxWidth: 12, font: { size: 11 } } } } })
+  });
+
+  // 4. Rainfall chart
+  const rainMonths = rain.map(r => r.month);
+  const rainChart = new Chart($('chart-rain'), {
+    type: 'bar',
+    data: {
+      labels: rainMonths,
+      datasets: [{ label: 'Rainfall (mm)', data: rain.map(r => r.rain_mm),
+                   backgroundColor: '#8ecae6' }]
+    },
+    options: baseChartOpts({ plugins: { marker: { index: -1 },
+      legend: { labels: { boxWidth: 12, font: { size: 11 } } } } })
+  });
+
+  // 5. Storage chart (twin baseline; its own period, not the full slider range)
+  const storageMonths = storage.map(r => String(r.date).slice(0, 7));
+  const storageChart = new Chart($('chart-storage'), {
+    type: 'line',
+    data: {
+      labels: storageMonths,
+      datasets: [
+        { label: 'Storage (% of assumed capacity)', data: storage.map(r => r.percent_full),
+          borderColor: '#0b4f6c', backgroundColor: '#0b4f6c', pointRadius: 3, tension: 0.2 },
+        { label: 'Illustrative warning level (20%)', data: storage.map(() => 20),
+          borderColor: '#d62728', borderDash: [6, 4], pointRadius: 0, fill: false }
+      ]
+    },
+    options: baseChartOpts({
+      scales: {
+        x: { ticks: { maxTicksLimit: 8, font: { size: 10 } } },
+        y: { min: 0, max: 100, ticks: { font: { size: 10 } } }
+      },
+      plugins: { marker: { index: -1 }, legend: { labels: { boxWidth: 12, font: { size: 11 } } } }
+    })
+  });
+
+  $('storage-note').textContent =
+    'Baseline uses average rainfall and a placeholder release policy. It is a scenario, not a forecast. ' +
+    'Storage is estimated from surface area and an assumed depth. Forecast months: ' +
+    `${forecast.length}.`;
+
+  // 6. Slider
+  const slider = $('month-slider');
+  slider.max = String(waterMonths.length - 1);
+  slider.value = String(waterMonths.length - 1);   // start at the latest month
+
+  function update(i) {
+    const month = waterMonths[i];
+    const row = water[i];
+
+    $('month-label').textContent = month;
+
+    // Map polygon
+    polyGroup.clearLayers();
+    if (polyByMonth[month]) {
+      polyGroup.addLayer(polyByMonth[month]);
+    }
+
+    // Readout
+    const ro = $('readout');
+    ro.innerHTML = '';
+    const km2 = row.water_km2;
+    if (km2 == null) {
+      ro.appendChild(el('span', 'No usable imagery this month (cloud or radar gap).', 'warn'));
+    } else {
+      ro.appendChild(el('span', `Water area: ${km2.toFixed(2)} km² (source: ${row.source || 'n/a'})`));
+    }
+    if (!polyByMonth[month]) {
+      ro.appendChild(el('div', 'No map polygon exported for this month.', 'note'));
+    }
+
+    // Chart markers
+    waterChart.options.plugins.marker.index = i;
+    waterChart.update('none');
+
+    rainChart.options.plugins.marker.index = rainMonths.indexOf(month);
+    rainChart.update('none');
+
+    storageChart.options.plugins.marker.index = storageMonths.indexOf(month);
+    storageChart.update('none');
+  }
+
+  slider.addEventListener('input', e => update(Number(e.target.value)));
+  update(Number(slider.value));
+
+  // 7. Metadata panel
+  renderMeta(meta);
+}
+
+function renderMeta(meta) {
+  const body = $('meta-body');
+  body.innerHTML = '';
+
+  body.appendChild(el('p', `Project: ${meta.project}`));
+  body.appendChild(el('p', `Generated: ${meta.generated_utc}`));
+
+  body.appendChild(el('h4', 'Sources'));
+  const srcList = el('ul');
+  Object.entries(meta.sources).forEach(([k, v]) => srcList.appendChild(el('li', `${k.replace(/_/g, ' ')}: ${v}`)));
+  body.appendChild(srcList);
+
+  body.appendChild(el('h4', 'Methods'));
+  const mList = el('ul');
+  Object.entries(meta.methods).forEach(([k, v]) => mList.appendChild(el('li', `${k.replace(/_/g, ' ')}: ${v}`)));
+  body.appendChild(mList);
+
+  body.appendChild(el('h4', 'Assumptions (placeholders, not measured values)'));
+  Object.entries(meta.assumptions).forEach(([k, v]) => {
+    if (k === 'note') return;
+    const row = el('div', null, 'assumption-row');
+    row.appendChild(el('span', k.replace(/_/g, ' ')));
+    row.appendChild(el('strong', String(v)));
+    body.appendChild(row);
+  });
+  body.appendChild(el('p', meta.assumptions.note, 'warn'));
+
+  body.appendChild(el('h4', 'Limitations'));
+  const lList = el('ul');
+  meta.limitations.forEach(t => lList.appendChild(el('li', t)));
+  body.appendChild(lList);
+}
+
+main().catch(err => {
+  console.error(err);
+  showError(
+    'The viewer could not load its data. Open it through a local server ' +
+    '(for example, run "python -m http.server 8000" in the project folder and visit ' +
+    'http://localhost:8000), and check that the data/ and geo/ folders are present.'
+  );
+  $('meta-body').textContent = 'Metadata could not be loaded.';
+});
+</script>
+</body>
+</html>
