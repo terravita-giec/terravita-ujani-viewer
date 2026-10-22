@@ -1,0 +1,37 @@
+{
+  "project": "TerraVita AquaTwin demo: Ujani Reservoir",
+  "generated_utc": "2026-10-22T21:44:42Z",
+  "study_area": {
+    "centre_lat": 18.0,
+    "centre_lon": 75.1,
+    "radius_km": 10,
+    "crs": "EPSG:4326"
+  },
+  "sources": {
+    "optical_water": "Sentinel-2 SR Harmonized (Copernicus), NDWI",
+    "radar_water": "Sentinel-1 GRD VV (Copernicus)",
+    "rainfall": "CHIRPS daily, summed to months",
+    "study_area_location": "Approximate; replace with exact boundary when available"
+  },
+  "methods": {
+    "ndwi_threshold": 0.2,
+    "vv_threshold_db": -18,
+    "cloud_mask": "Sentinel-2 Scene Classification Layer",
+    "monthly_composite": "Median of cloud-masked images"
+  },
+  "assumptions": {
+    "mean_depth_m": 10.0,
+    "full_capacity_mcm": 117.0,
+    "catchment_km2": 1200.0,
+    "runoff_coefficient": 0.15,
+    "evap_mm_per_month": 150.0,
+    "note": "Placeholder values. Replace with published Ujani figures and cite them."
+  },
+  "limitations": [
+    "Water masks depend on the chosen threshold and on cloud or wind conditions.",
+    "Storage volumes are estimated from surface area and an assumed average depth.",
+    "The twin is a simplified water balance, not a dam engineering model.",
+    "The forecast uses average rainfall for future months and is not a prediction of actual conditions.",
+    "Polygons cover the rectangular study area only, so shapes are cut at its edges."
+  ]
+}
