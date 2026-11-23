@@ -27,7 +27,7 @@ const CONFIG = {
   baselineCSV: "data/twin_baseline.csv",
   forecastCSV: "data/forecast_6month.csv",
   modelCSV: "data/model_dataset.csv",
-
+  
   studyAreaGeoJSON: "geo/study_area.geojson",
   waterPolygonsGeoJSON: "geo/water_extent_polygons.geojson",
 
@@ -219,6 +219,38 @@ async function loadCSV(path) {
   return validRows(parsed.data);
 }
 
+async function loadForecastData() {
+  const response = await fetch(FORECAST_CSV);
+
+  if (!response.ok) {
+    throw new Error("Unable to load forecast_6month.csv");
+  }
+
+  const csvText = await response.text();
+
+  const parsed = Papa.parse(csvText, {
+    header: true,
+    skipEmptyLines: true,
+    dynamicTyping: true
+  });
+
+  if (parsed.errors.length) {
+    console.warn("Forecast CSV warnings:", parsed.errors);
+  }
+
+  return parsed.data
+    .map(row => ({
+      date: row.date,
+      waterArea: Number(row.water_km2_forecast)
+    }))
+    .filter(row =>
+      Number.isFinite(row.waterArea) &&
+      row.date !== undefined &&
+      row.date !== null &&
+      String(row.date).trim() !== ""
+    );
+}
+
 
 /* =========================================================
    5. WATER EXTENT DATA
@@ -281,6 +313,37 @@ let baselineData = [];
 let filteredWaterData = [];
 let charts = {};
 
+
+function updateForecastSummary(forecastData) {
+  if (!forecastData.length) return;
+
+  const first = forecastData[0].waterArea;
+  const last = forecastData[forecastData.length - 1].waterArea;
+
+  const change = last - first;
+
+  const changePercent = first !== 0
+    ? (change / first) * 100
+    : null;
+
+  const firstElement = document.getElementById("forecastStart");
+  const lastElement = document.getElementById("forecastEnd");
+  const changeElement = document.getElementById("forecastChange");
+
+  if (firstElement) {
+    firstElement.textContent = `${first.toFixed(2)} km²`;
+  }
+
+  if (lastElement) {
+    lastElement.textContent = `${last.toFixed(2)} km²`;
+  }
+
+  if (changeElement) {
+    changeElement.textContent = changePercent === null
+      ? "—"
+      : `${changePercent.toFixed(1)}%`;
+  }
+}
 
 /* =========================================================
    6. YEAR FILTER
@@ -376,6 +439,80 @@ function updateKPIs() {
 /* =========================================================
    8. CHART HELPERS
 ========================================================= */
+
+let forecastChart = null;
+
+function renderForecastChart(forecastData) {
+  const canvas = document.getElementById("forecastChart");
+
+  if (!canvas || typeof Chart === "undefined") return;
+
+  if (forecastChart) {
+    forecastChart.destroy();
+  }
+
+  forecastChart = new Chart(canvas, {
+    type: "line",
+
+    data: {
+      labels: forecastData.map(row => row.date),
+
+      datasets: [{
+        label: "Forecast Water Extent (km²)",
+        data: forecastData.map(row => row.waterArea),
+
+        borderColor: "#27d3c2",
+        backgroundColor: "rgba(39, 211, 194, 0.12)",
+
+        borderWidth: 3,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        pointBackgroundColor: "#27d3c2",
+
+        fill: true,
+        tension: 0.3
+      }]
+    },
+
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+
+      plugins: {
+        legend: {
+          labels: {
+            color: "#a8b7c9"
+          }
+        },
+
+        tooltip: {
+          callbacks: {
+            label: context =>
+              `Water extent: ${context.parsed.y.toFixed(3)} km²`
+          }
+        }
+      },
+
+      scales: {
+        x: {
+          ticks: { color: "#94a3b8" },
+          grid: { color: "rgba(148,163,184,0.12)" }
+        },
+
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: "Water area (km²)",
+            color: "#a8b7c9"
+          },
+          ticks: { color: "#94a3b8" },
+          grid: { color: "rgba(148,163,184,0.12)" }
+        }
+      }
+    }
+  });
+}
 
 function destroyChart(name) {
   if (charts[name]) {
