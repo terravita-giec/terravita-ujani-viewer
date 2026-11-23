@@ -374,6 +374,54 @@
 
     </section>
 
+   
+<section class="panel dashboard-section">
+
+  <div class="panel-header">
+    <div>
+      <h2 class="panel-title">
+        Six-Month Water Extent Forecast
+      </h2>
+      <p class="panel-description">
+        Forecasted reservoir surface area in km²
+      </p>
+    </div>
+
+    <span class="panel-tag">Forecast Model</span>
+  </div>
+
+  <div class="scenario-grid">
+    <div class="scenario-metric">
+      <span>Starting Forecast</span>
+      <strong id="forecastStart">—</strong>
+    </div>
+
+    <div class="scenario-metric">
+      <span>Final Forecast</span>
+      <strong id="forecastEnd">—</strong>
+    </div>
+
+    <div class="scenario-metric">
+      <span>Forecast Change</span>
+      <strong id="forecastChange">—</strong>
+    </div>
+
+    <div class="scenario-metric">
+      <span>Forecast Period</span>
+      <strong>6 Months</strong>
+    </div>
+  </div>
+
+  <div class="chart-container" style="margin-top: 24px;">
+    <canvas id="forecastChart"></canvas>
+  </div>
+
+  <p class="panel-description" style="margin-top: 15px;">
+    Model-generated forecast. Values represent predicted
+    water-surface area, not measured reservoir storage.
+  </p>
+
+</section>
 
     <!-- DIGITAL TWIN -->
     <section class="section grid-two" id="twin">
