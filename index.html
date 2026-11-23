@@ -15,6 +15,22 @@
 <div class="metric"><label>Latest baseline storage</label><strong id="kpiStorage">—</strong><small id="kpiStorageDate">From twin baseline CSV</small></div>
 <div class="metric"><label>Forecast horizon</label><strong id="kpiForecast">—</strong><small>Rows in forecast file</small></div>
 </section>
+
+<section class="data-notice">
+  <div class="notice-icon">ⓘ</div>
+
+  <div class="notice-content">
+    <h3>Data Interpretation</h3>
+    <p>
+      This dashboard reads your local project files. It does not create
+      missing observations. Check metadata and source notes before
+      presenting results. Forecast and baseline values should be
+      described according to your model assumptions, not as
+      operational reservoir predictions.
+    </p>
+  </div>
+</section>
+
 <div class="layout">
 <section class="panel"><h2>Reservoir & water extent</h2><div class="hint">Study area and water polygons from your GeoJSON files</div><div class="map-wrap"><div id="map" class="map"></div><div class="map-note" id="mapNote">Waiting for GeoJSON…</div></div><div class="hint" style="margin:10px 0 0">Map layers: study area • monthly water extent polygons. If the map remains blank, check the GeoJSON paths and run from localhost.</div></section>
 <section class="panel"><h2>Monthly water extent</h2><div class="hint">Observed water-area series with forecast, when compatible fields are detected</div><div class="controls"><label for="monthSelect">Highlight period</label><select id="monthSelect"><option value="">All periods</option></select></div><canvas id="extentChart" class="chart"></canvas><div class="hint" id="extentInfo">Chart will populate from water_extent_monthly.csv.</div></section>
