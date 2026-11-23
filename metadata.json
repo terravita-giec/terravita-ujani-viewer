@@ -1,8 +1,0 @@
-const files = {
-  monthly: "data/water_extent_monthly.csv",
-  forecast: "data/forecast_6month.csv",
-  baseline: "data/twin_baseline.csv",
-  model: "data/model_dataset.csv",
-  studyArea: "geo/study_area.geojson",
-  waterExtent: "geo/water_extent_polygons.geojson"
-};
