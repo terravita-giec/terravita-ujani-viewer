@@ -1,682 +1,923 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="TerraVita AquaTwin — satellite-based Ujani Reservoir water monitoring and digital twin demonstration.">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <title>TerraVita AquaTwin | Ujani Reservoir</title>
+    <meta name="description" content="TerraVita AquaTwin — satellite-based Ujani Reservoir water monitoring and digital twin demonstration.">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <meta name="theme-color" content="#071522">
 
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <title>TerraVita AquaTwin | Ujani Reservoir</title>
 
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Dashboard CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div class="app-shell">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar" id="sidebar">
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+    <aside class="sidebar" id="sidebar">
 
-    <a class="brand" href="#overview">
-      <span class="brand-mark">TV</span>
-      <span>
-        <strong>TERRAVITA</strong>
-        <small>GEOSPATIAL INTELLIGENCE</small>
-      </span>
-    </a>
+        <a class="brand" href="#overview">
+            <span class="brand-mark">TV</span>
 
-    <div class="project-chip">
-      <span class="pulse"></span>
-      DIGITAL TWIN DEMO
-    </div>
-
-    <nav class="nav">
-      <a class="nav-link active" href="#overview">
-        <span>◫</span> Overview
-      </a>
-
-      <a class="nav-link" href="#spatial">
-        <span>⌖</span> Spatial Intelligence
-      </a>
-
-      <a class="nav-link" href="#water">
-        <span>≈</span> Water Monitoring
-      </a>
-
-      <a class="nav-link" href="#twin">
-        <span>◷</span> Digital Twin
-      </a>
-
-      <a class="nav-link" href="#method">
-        <span>▤</span> Methodology
-      </a>
-    </nav>
-
-    <div class="sidebar-bottom">
-
-      <div class="side-note">
-        <span class="side-note-icon">i</span>
-        <div>
-          <b>Research Demonstrator</b>
-          <p>Not an operational reservoir or dam-safety system.</p>
-        </div>
-      </div>
-
-      <div class="sidebar-footer">
-        © 2026 TerraVita<br>
-        Environmental & Geospatial Consultancy
-      </div>
-
-    </div>
-  </aside>
-
-
-  <!-- MAIN CONTENT -->
-  <main class="main">
-
-    <!-- TOP NAVIGATION -->
-    <header class="topbar">
-
-      <button class="menu-btn" id="menuBtn">
-        ☰
-      </button>
-
-      <div class="breadcrumb">
-        AquaTwin <span>/</span> Ujani Reservoir
-      </div>
-
-      <div class="topbar-right">
-        <span class="status-dot"></span>
-        <span>PORTFOLIO DEMO</span>
-        <span class="topbar-divider"></span>
-        <span class="date-label">MAHARASHTRA, INDIA</span>
-      </div>
-
-    </header>
-
-
-    <!-- HERO SECTION -->
-    <section class="hero section" id="overview">
-
-      <div>
-
-        <div class="eyebrow">
-          <span class="eyebrow-line"></span>
-          SATELLITE + GIS + WATER MODELLING
-        </div>
-
-        <h1>
-          Ujani Reservoir<br>
-          <em>Digital Twin</em>
-        </h1>
-
-        <p class="hero-copy">
-          A satellite-informed reservoir intelligence demonstrator
-          combining monthly water-extent observations, rainfall
-          context and a simplified water-balance baseline.
-        </p>
-
-        <div class="hero-meta">
-          <span>● Sentinel-1 & Sentinel-2</span>
-          <span>● CHIRPS rainfall context</span>
-          <span>● Water-balance scenario</span>
-        </div>
-
-      </div>
-
-      <div class="hero-art">
-
-        <div class="orbit orbit-one"></div>
-        <div class="orbit orbit-two"></div>
-
-        <div class="orbit-core">
-          <span>UJANI</span>
-          <b>水</b>
-          <small>RESERVOIR SYSTEM</small>
-        </div>
-
-        <div class="orbit-label label-a">
-          SATELLITE<br>
-          <b>OBSERVATION</b>
-        </div>
-
-        <div class="orbit-label label-b">
-          SPATIAL<br>
-          <b>INTELLIGENCE</b>
-        </div>
-
-      </div>
-
-    </section>
-
-
-    <!-- KPI SECTION -->
-    <section class="section">
-
-      <div class="section-heading">
-
-        <div>
-          <div class="eyebrow">PROJECT SNAPSHOT</div>
-          <h2>Monitoring at a glance</h2>
-        </div>
-
-        <span class="period-tag">
-          OBSERVATION PERIOD · JAN 2021 – DEC 2024
-        </span>
-
-      </div>
-
-      <div class="kpi-grid">
-
-        <article class="kpi-card">
-          <div class="kpi-top">
-            <span>Sentinel-2 Images</span>
-            <span class="kpi-icon teal">S2</span>
-          </div>
-          <strong id="s2Images">—</strong>
-          <small>Monthly image count total</small>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-top">
-            <span>Sentinel-1 Images</span>
-            <span class="kpi-icon blue">S1</span>
-          </div>
-          <strong id="s1Images">—</strong>
-          <small>Monthly image count total</small>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-top">
-            <span>Water Observations</span>
-            <span class="kpi-icon violet">↗</span>
-          </div>
-          <strong id="monthCount">—</strong>
-          <small>Monthly records in dataset</small>
-        </article>
-
-        <article class="kpi-card">
-          <div class="kpi-top">
-            <span>Baseline End Volume</span>
-            <span class="kpi-icon amber">M³</span>
-          </div>
-          <strong id="endVolume">—</strong>
-          <small>June 2025 · Scenario output (MCM)</small>
-        </article>
-
-      </div>
-    </section>
-
-
-    <!-- SPATIAL INTELLIGENCE -->
-    <section class="section grid-two" id="spatial">
-
-      <article class="panel map-panel">
-
-        <div class="panel-heading">
-          <div>
-            <div class="eyebrow">SPATIAL INTELLIGENCE</div>
-            <h2>Reservoir Location View</h2>
-          </div>
-
-          <span class="live-label">
-            <i></i> MAP
-          </span>
-        </div>
-
-        <div id="reservoirMap"></div>
-
-        <div class="map-caption">
-          <span class="map-legend"></span>
-          Approximate Ujani Reservoir map view
-          <span class="caption-muted">
-            · Add study_area.geojson for exact project boundary
-          </span>
-        </div>
-
-      </article>
-
-
-      <!-- DATA COVERAGE -->
-      <article class="panel insight-panel">
-
-        <div class="eyebrow">DATA COVERAGE</div>
-
-        <h2>Satellite Observation Record</h2>
-
-        <p class="panel-copy">
-          Monthly satellite-derived water-area estimates are
-          available for the four-year observation window.
-          Missing values are retained as gaps rather than
-          being silently interpolated.
-        </p>
-
-        <div class="coverage-row">
-
-          <div>
-            <span class="coverage-name">
-              <i class="dot s2"></i>
-              Sentinel-2 Optical
+            <span>
+                <strong>TERRAVITA</strong>
+                <small>GEOSPATIAL INTELLIGENCE</small>
             </span>
-            <b id="s2Coverage">—</b>
-          </div>
-
-          <div class="coverage-track">
-            <span id="s2CoverageBar" class="coverage-fill s2-fill"></span>
-          </div>
-
-        </div>
-
-
-        <div class="coverage-row">
-
-          <div>
-            <span class="coverage-name">
-              <i class="dot s1"></i>
-              Sentinel-1 Radar
-            </span>
-            <b id="s1Coverage">—</b>
-          </div>
-
-          <div class="coverage-track">
-            <span id="s1CoverageBar" class="coverage-fill s1-fill"></span>
-          </div>
-
-        </div>
-
-
-        <div class="insight-callout">
-
-          <b>Interpretation Note</b>
-
-          <p>
-            Optical observations can be affected by cloud cover.
-            Radar observations provide complementary information
-            but can be influenced by wind, rough water and
-            threshold selection.
-          </p>
-
-        </div>
-
-      </article>
-
-    </section>
-
-
-    <!-- WATER EXTENT ANALYTICS -->
-    <section class="section" id="water">
-
-      <div class="section-heading">
-
-        <div>
-          <div class="eyebrow">SATELLITE MONITORING</div>
-          <h2>Water Extent Analytics</h2>
-
-          <p class="section-subtitle">
-            Monthly water-surface area estimates from the
-            uploaded satellite dataset.
-          </p>
-        </div>
-
-        <div class="chart-actions">
-
-          <select id="yearFilter" aria-label="Filter year">
-            <option value="all">All years</option>
-            <option>2021</option>
-            <option>2022</option>
-            <option>2023</option>
-            <option>2024</option>
-          </select>
-
-          <a class="text-link"
-             href="data/water_extent_monthly.csv"
-             download>
-            Download CSV ↗
-          </a>
-
-        </div>
-
-      </div>
-
-
-      <div class="panel chart-panel">
-
-        <div class="chart-title-row">
-
-          <div>
-            <b>Monthly Water Extent</b>
-            <small>Area (km²) · Sentinel-1 vs Sentinel-2</small>
-          </div>
-
-          <div class="chart-legend">
-            <span><i class="dot s2"></i> Sentinel-2</span>
-            <span><i class="dot s1"></i> Sentinel-1</span>
-          </div>
-
-        </div>
-
-        <div class="chart-wrap">
-          <canvas id="waterChart"></canvas>
-        </div>
-
-        <div class="chart-foot">
-          <span id="waterRange">Loading observation range…</span>
-          <span>Missing monthly values shown as gaps</span>
-        </div>
-
-      </div>
-
-    </section>
-
-   
-<section class="panel dashboard-section">
-
-  <div class="panel-header">
-    <div>
-      <h2 class="panel-title">
-        Six-Month Water Extent Forecast
-      </h2>
-      <p class="panel-description">
-        Forecasted reservoir surface area in km²
-      </p>
-    </div>
-
-    <span class="panel-tag">Forecast Model</span>
-  </div>
-
-  <div class="scenario-grid">
-    <div class="scenario-metric">
-      <span>Starting Forecast</span>
-      <strong id="forecastStart">—</strong>
-    </div>
-
-    <div class="scenario-metric">
-      <span>Final Forecast</span>
-      <strong id="forecastEnd">—</strong>
-    </div>
-
-    <div class="scenario-metric">
-      <span>Forecast Change</span>
-      <strong id="forecastChange">—</strong>
-    </div>
-
-    <div class="scenario-metric">
-      <span>Forecast Period</span>
-      <strong>6 Months</strong>
-    </div>
-  </div>
-
-  <div class="chart-container" style="margin-top: 24px;">
-    <canvas id="forecastChart"></canvas>
-  </div>
-
-  <p class="panel-description" style="margin-top: 15px;">
-    Model-generated forecast. Values represent predicted
-    water-surface area, not measured reservoir storage.
-  </p>
-
-</section>
-
-    <!-- DIGITAL TWIN -->
-    <section class="section grid-two" id="twin">
-
-      <article class="panel chart-panel">
-
-        <div class="panel-heading">
-
-          <div>
-            <div class="eyebrow">WATER-BALANCE MODEL</div>
-            <h2>Baseline Storage Scenario</h2>
-          </div>
-
-          <span class="scenario-tag">
-            SCENARIO · NOT MEASURED
-          </span>
-
-        </div>
-
-        <p class="panel-copy">
-          The uploaded six-month baseline output. Values reflect
-          the assumptions and parameters used in the model,
-          not observed live reservoir storage.
-        </p>
-
-        <div class="chart-wrap compact">
-          <canvas id="volumeChart"></canvas>
-        </div>
-
-        <div class="metric-strip">
-
-          <div>
-            <small>Ending Volume</small>
-            <b id="scenarioVolume">—</b>
-          </div>
-
-          <div>
-            <small>Ending Fullness</small>
-            <b id="scenarioFull">—</b>
-          </div>
-
-          <div>
-            <small>Period</small>
-            <b>6 months</b>
-          </div>
-
-        </div>
-
-      </article>
-
-
-      <!-- RAINFALL -->
-      <article class="panel chart-panel">
-
-        <div class="panel-heading">
-
-          <div>
-            <div class="eyebrow">RAINFALL CONTEXT</div>
-            <h2>Baseline Rainfall & Inflow</h2>
-          </div>
-
-          <span class="scenario-tag">
-            MODEL INPUTS
-          </span>
-
-        </div>
-
-        <p class="panel-copy">
-          Monthly rainfall and derived inflow values included
-          in the provided baseline file.
-        </p>
-
-        <div class="chart-wrap compact">
-          <canvas id="rainChart"></canvas>
-        </div>
-
-        <div class="chart-foot">
-          <span>Rainfall: mm</span>
-          <span>Inflow: MCM</span>
-        </div>
-
-      </article>
-
-    </section>
-
-
-    <!-- BASELINE TABLE -->
-    <section class="section">
-
-      <div class="section-heading">
-
-        <div>
-          <div class="eyebrow">BASELINE OUTPUT TABLE</div>
-          <h2>Six-Month Digital Twin Record</h2>
-
-          <p class="section-subtitle">
-            Values loaded directly from ujani_twin_baseline.csv.
-          </p>
-        </div>
-
-        <a class="text-link"
-           href="data/twin_baseline.csv"
-           download>
-          Download Baseline ↗
         </a>
 
-      </div>
+        <div class="project-chip">
+            <span class="pulse"></span>
+            DIGITAL TWIN DEMO
+        </div>
 
+        <nav class="nav" aria-label="Main navigation">
 
-      <div class="panel table-panel">
+            <a class="nav-link active" href="#overview">
+                <span>◫</span>
+                Overview
+            </a>
 
-        <div class="table-scroll">
+            <a class="nav-link" href="#spatial">
+                <span>⌖</span>
+                Spatial Intelligence
+            </a>
 
-          <table>
+            <a class="nav-link" href="#water">
+                <span>≈</span>
+                Water Monitoring
+            </a>
 
-            <thead>
-              <tr>
-                <th>Month</th>
-                <th>Rainfall (mm)</th>
-                <th>Inflow (MCM)</th>
-                <th>Release (MCM)</th>
-                <th>Evaporation (MCM)</th>
-                <th>Volume (MCM)</th>
-                <th>Fullness (%)</th>
-              </tr>
-            </thead>
+            <a class="nav-link" href="#twin">
+                <span>◷</span>
+                Digital Twin
+            </a>
 
-            <tbody id="baselineTable">
+            <a class="nav-link" href="#method">
+                <span>▤</span>
+                Methodology
+            </a>
 
-              <tr>
-                <td colspan="7">Loading baseline data…</td>
-              </tr>
+        </nav>
 
-            </tbody>
+        <div class="sidebar-bottom">
 
-          </table>
+            <div class="side-note">
+
+                <span class="side-note-icon">i</span>
+
+                <div>
+                    <b>Research Demonstrator</b>
+                    <p>
+                        Not an operational reservoir or dam-safety system.
+                    </p>
+                </div>
+
+            </div>
+
+            <div class="sidebar-footer">
+                © 2026 TerraVita<br>
+                Environmental & Geospatial Consultancy
+            </div>
 
         </div>
 
-      </div>
-
-    </section>
+    </aside>
 
 
-    <!-- METHODOLOGY -->
-    <section class="section" id="method">
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
+    <main class="main">
 
-      <div class="section-heading">
+        <!-- TOP NAVIGATION -->
+        <header class="topbar">
 
-        <div>
-          <div class="eyebrow">TRANSPARENCY & REPRODUCIBILITY</div>
-          <h2>Methodology & Limitations</h2>
-        </div>
+            <button
+                class="menu-btn"
+                id="menuBtn"
+                type="button"
+                aria-label="Toggle navigation"
+                aria-controls="sidebar"
+                aria-expanded="false"
+            >
+                ☰
+            </button>
 
-      </div>
+            <div class="breadcrumb">
+                AquaTwin <span>/</span> Ujani Reservoir
+            </div>
 
+            <div class="topbar-right">
 
-      <div class="method-grid">
+                <span class="status-dot"></span>
+                <span>PORTFOLIO DEMO</span>
 
-        <article class="method-card">
-          <span class="method-number">01</span>
-          <h3>Satellite Observations</h3>
-          <p>
-            Monthly water extent is presented from the provided
-            Sentinel-2 optical and Sentinel-1 radar outputs.
-            The dashboard does not reprocess satellite imagery.
-          </p>
-        </article>
+                <span class="topbar-divider"></span>
 
-        <article class="method-card">
-          <span class="method-number">02</span>
-          <h3>Rainfall Context</h3>
-          <p>
-            Rainfall and inflow are displayed from the six-month
-            baseline CSV. They are model inputs/outputs,
-            not a live rainfall feed.
-          </p>
-        </article>
+                <span class="date-label">
+                    MAHARASHTRA, INDIA
+                </span>
 
-        <article class="method-card">
-          <span class="method-number">03</span>
-          <h3>Digital Twin Baseline</h3>
-          <p>
-            Storage, release and evaporation are shown as
-            supplied scenario outputs. Placeholder assumptions
-            may materially affect the results.
-          </p>
-        </article>
+            </div>
 
-        <article class="method-card">
-          <span class="method-number">04</span>
-          <h3>Known Limitations</h3>
-          <p>
-            Exact spatial boundary, forecast file and model
-            dataset were not included in the supplied files.
-            No GeoAI score or future forecast is displayed.
-          </p>
-        </article>
-
-      </div>
+        </header>
 
 
-      <div class="disclaimer">
+        <!-- ==========================================
+             HERO SECTION
+        =========================================== -->
+        <section class="hero section" id="overview">
 
-        <b>Important Use Limitation</b>
+            <div class="hero-content">
 
-        <p>
-          This portfolio demonstrator is built from public-data
-          workflows and supplied model outputs. Storage values
-          are not measured reservoir levels. It must not be used
-          for dam operations, flood warnings, water allocation,
-          infrastructure safety or other operational decisions.
-        </p>
+                <div class="eyebrow">
+                    <span class="eyebrow-line"></span>
+                    SATELLITE + GIS + WATER MODELLING
+                </div>
 
-      </div>
+                <h1>
+                    Ujani Reservoir<br>
+                    <em>Digital Twin</em>
+                </h1>
 
-    </section>
+                <p class="hero-copy">
+                    A satellite-informed reservoir intelligence
+                    demonstrator combining monthly water-extent
+                    observations, rainfall context and a simplified
+                    water-balance baseline.
+                </p>
+
+                <div class="hero-meta">
+
+                    <span>● Sentinel-1 & Sentinel-2</span>
+                    <span>● CHIRPS rainfall context</span>
+                    <span>● Water-balance scenario</span>
+
+                </div>
+
+            </div>
+
+            <div class="hero-art" aria-hidden="true">
+
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+
+                <div class="orbit-core">
+                    <span>UJANI</span>
+                    <b>水</b>
+                    <small>RESERVOIR SYSTEM</small>
+                </div>
+
+                <div class="orbit-label label-a">
+                    SATELLITE<br>
+                    <b>OBSERVATION</b>
+                </div>
+
+                <div class="orbit-label label-b">
+                    SPATIAL<br>
+                    <b>INTELLIGENCE</b>
+                </div>
+
+            </div>
+
+        </section>
 
 
-    <!-- FOOTER -->
-    <footer class="footer">
+        <!-- ==========================================
+             KPI SECTION
+        =========================================== -->
+        <section class="section" id="snapshot">
 
-      <div class="brand mini">
-        <span class="brand-mark">TV</span>
-        <span>
-          <strong>TERRAVITA</strong>
-          <small>ENVIRONMENTAL & GEOSPATIAL CONSULTANCY</small>
-        </span>
-      </div>
+            <div class="section-heading">
 
-      <span>
-        Satellite data → GIS → Modelling → Insights
-      </span>
+                <div>
+                    <div class="eyebrow">PROJECT SNAPSHOT</div>
+                    <h2>Monitoring at a glance</h2>
+                </div>
 
-      <span>© 2026 TerraVita</span>
+                <span class="period-tag">
+                    OBSERVATION PERIOD · JAN 2021 – DEC 2024
+                </span>
 
-    </footer>
+            </div>
 
-  </main>
+            <div class="kpi-grid">
+
+                <article class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>Sentinel-2 Images</span>
+                        <span class="kpi-icon teal">S2</span>
+                    </div>
+
+                    <strong id="s2Images">—</strong>
+
+                    <small>Monthly image count total</small>
+
+                </article>
+
+
+                <article class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>Sentinel-1 Images</span>
+                        <span class="kpi-icon blue">S1</span>
+                    </div>
+
+                    <strong id="s1Images">—</strong>
+
+                    <small>Monthly image count total</small>
+
+                </article>
+
+
+                <article class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>Water Observations</span>
+                        <span class="kpi-icon violet">↗</span>
+                    </div>
+
+                    <strong id="monthCount">—</strong>
+
+                    <small>Monthly records in dataset</small>
+
+                </article>
+
+
+                <article class="kpi-card">
+
+                    <div class="kpi-top">
+                        <span>Baseline End Volume</span>
+                        <span class="kpi-icon amber">M³</span>
+                    </div>
+
+                    <strong id="endVolume">—</strong>
+
+                    <small>Scenario output · MCM</small>
+
+                </article>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             SPATIAL INTELLIGENCE
+        =========================================== -->
+        <section class="section grid-two" id="spatial">
+
+            <!-- RESERVOIR MAP -->
+            <article class="panel map-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <div class="eyebrow">SPATIAL INTELLIGENCE</div>
+                        <h2>Reservoir Location View</h2>
+                    </div>
+
+                    <span class="live-label">
+                        <i></i> MAP
+                    </span>
+
+                </div>
+
+                <div
+                    id="reservoirMap"
+                    role="application"
+                    aria-label="Interactive map showing Ujani Reservoir"
+                ></div>
+
+                <div class="map-caption">
+
+                    <span class="map-legend"></span>
+
+                    Approximate Ujani Reservoir map view
+
+                    <span class="caption-muted">
+                        · Study boundary loaded from GeoJSON when available
+                    </span>
+
+                </div>
+
+            </article>
+
+
+            <!-- DATA COVERAGE -->
+            <article class="panel insight-panel">
+
+                <div class="eyebrow">DATA COVERAGE</div>
+
+                <h2>Satellite Observation Record</h2>
+
+                <p class="panel-copy">
+                    Monthly satellite-derived water-area estimates
+                    are available for the observation period.
+                    Missing values are retained as gaps rather
+                    than being silently interpolated.
+                </p>
+
+
+                <!-- SENTINEL-2 COVERAGE -->
+                <div class="coverage-row">
+
+                    <div>
+
+                        <span class="coverage-name">
+                            <i class="dot s2"></i>
+                            Sentinel-2 Optical
+                        </span>
+
+                        <b id="s2Coverage">—</b>
+
+                    </div>
+
+                    <div class="coverage-track">
+                        <span
+                            id="s2CoverageBar"
+                            class="coverage-fill s2-fill"
+                        ></span>
+                    </div>
+
+                </div>
+
+
+                <!-- SENTINEL-1 COVERAGE -->
+                <div class="coverage-row">
+
+                    <div>
+
+                        <span class="coverage-name">
+                            <i class="dot s1"></i>
+                            Sentinel-1 Radar
+                        </span>
+
+                        <b id="s1Coverage">—</b>
+
+                    </div>
+
+                    <div class="coverage-track">
+                        <span
+                            id="s1CoverageBar"
+                            class="coverage-fill s1-fill"
+                        ></span>
+                    </div>
+
+                </div>
+
+
+                <!-- INTERPRETATION -->
+                <div class="insight-callout">
+
+                    <b>Interpretation Note</b>
+
+                    <p>
+                        Optical observations can be affected by
+                        cloud cover. Radar observations provide
+                        complementary information but can be
+                        influenced by wind, rough water and
+                        threshold selection.
+                    </p>
+
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- ==========================================
+             WATER EXTENT ANALYTICS
+        =========================================== -->
+        <section class="section" id="water">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="eyebrow">SATELLITE MONITORING</div>
+
+                    <h2>Water Extent Analytics</h2>
+
+                    <p class="section-subtitle">
+                        Monthly water-surface area estimates
+                        from the uploaded satellite dataset.
+                    </p>
+
+                </div>
+
+
+                <div class="chart-actions">
+
+                    <select
+                        id="yearFilter"
+                        aria-label="Filter observations by year"
+                    >
+                        <option value="all">All years</option>
+                        <option value="2021">2021</option>
+                        <option value="2022">2022</option>
+                        <option value="2023">2023</option>
+                        <option value="2024">2024</option>
+                    </select>
+
+                    <a
+                        class="text-link"
+                        href="data/water_extent_monthly.csv"
+                        download
+                    >
+                        Download CSV ↗
+                    </a>
+
+                </div>
+
+            </div>
+
+
+            <div class="panel chart-panel">
+
+                <div class="chart-title-row">
+
+                    <div>
+                        <b>Monthly Water Extent</b>
+                        <small>
+                            Area (km²) · Sentinel-1 vs Sentinel-2
+                        </small>
+                    </div>
+
+                    <div class="chart-legend">
+                        <span>
+                            <i class="dot s2"></i>
+                            Sentinel-2
+                        </span>
+
+                        <span>
+                            <i class="dot s1"></i>
+                            Sentinel-1
+                        </span>
+                    </div>
+
+                </div>
+
+                <div class="chart-wrap">
+                    <canvas
+                        id="waterChart"
+                        aria-label="Monthly water extent chart"
+                    ></canvas>
+                </div>
+
+                <div class="chart-foot">
+
+                    <span id="waterRange">
+                        Loading observation range…
+                    </span>
+
+                    <span>
+                        Missing monthly values shown as gaps
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             SIX-MONTH FORECAST
+        =========================================== -->
+        <section class="section">
+
+            <div class="panel dashboard-section">
+
+                <div class="panel-header">
+
+                    <div>
+                        <div class="eyebrow">PREDICTIVE ANALYTICS</div>
+
+                        <h2 class="panel-title">
+                            Six-Month Water Extent Forecast
+                        </h2>
+
+                        <p class="panel-description">
+                            Model-generated forecast of reservoir
+                            surface area in km².
+                        </p>
+                    </div>
+
+                    <span class="panel-tag">
+                        FORECAST MODEL
+                    </span>
+
+                </div>
+
+
+                <!-- FORECAST METRICS -->
+                <div class="scenario-grid">
+
+                    <div class="scenario-metric">
+                        <span>Starting Forecast</span>
+                        <strong id="forecastStart">—</strong>
+                    </div>
+
+                    <div class="scenario-metric">
+                        <span>Final Forecast</span>
+                        <strong id="forecastEnd">—</strong>
+                    </div>
+
+                    <div class="scenario-metric">
+                        <span>Forecast Change</span>
+                        <strong id="forecastChange">—</strong>
+                    </div>
+
+                    <div class="scenario-metric">
+                        <span>Forecast Period</span>
+                        <strong>6 Months</strong>
+                    </div>
+
+                </div>
+
+
+                <!-- FORECAST CHART -->
+                <div class="chart-container">
+
+                    <canvas
+                        id="forecastChart"
+                        aria-label="Six-month water extent forecast chart"
+                    ></canvas>
+
+                </div>
+
+
+                <p class="panel-description forecast-note">
+                    Model-generated forecast. Values represent
+                    predicted water-surface area, not measured
+                    reservoir storage. They should not be interpreted
+                    as verified future reservoir conditions.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             DIGITAL TWIN
+        =========================================== -->
+        <section class="section grid-two" id="twin">
+
+            <!-- STORAGE SCENARIO -->
+            <article class="panel chart-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <div class="eyebrow">WATER-BALANCE MODEL</div>
+                        <h2>Baseline Storage Scenario</h2>
+                    </div>
+
+                    <span class="scenario-tag">
+                        SCENARIO · NOT MEASURED
+                    </span>
+
+                </div>
+
+                <p class="panel-copy">
+                    The uploaded six-month baseline output.
+                    Values reflect the assumptions and parameters
+                    used in the model, not observed live
+                    reservoir storage.
+                </p>
+
+                <div class="chart-wrap compact">
+
+                    <canvas
+                        id="volumeChart"
+                        aria-label="Baseline storage scenario chart"
+                    ></canvas>
+
+                </div>
+
+
+                <!-- SCENARIO METRICS -->
+                <div class="metric-strip">
+
+                    <div>
+                        <small>Ending Volume</small>
+                        <b id="scenarioVolume">—</b>
+                    </div>
+
+                    <div>
+                        <small>Ending Fullness</small>
+                        <b id="scenarioFull">—</b>
+                    </div>
+
+                    <div>
+                        <small>Period</small>
+                        <b>6 months</b>
+                    </div>
+
+                </div>
+
+            </article>
+
+
+            <!-- RAINFALL -->
+            <article class="panel chart-panel">
+
+                <div class="panel-heading">
+
+                    <div>
+                        <div class="eyebrow">RAINFALL CONTEXT</div>
+                        <h2>Baseline Rainfall & Inflow</h2>
+                    </div>
+
+                    <span class="scenario-tag">
+                        MODEL INPUTS
+                    </span>
+
+                </div>
+
+                <p class="panel-copy">
+                    Monthly rainfall and derived inflow values
+                    included in the provided baseline file.
+                </p>
+
+                <div class="chart-wrap compact">
+
+                    <canvas
+                        id="rainChart"
+                        aria-label="Monthly rainfall and inflow chart"
+                    ></canvas>
+
+                </div>
+
+                <div class="chart-foot">
+                    <span>Rainfall: mm</span>
+                    <span>Inflow: MCM</span>
+                </div>
+
+            </article>
+
+        </section>
+
+
+        <!-- ==========================================
+             BASELINE DATA TABLE
+        =========================================== -->
+        <section class="section">
+
+            <div class="section-heading">
+
+                <div>
+
+                    <div class="eyebrow">BASELINE OUTPUT TABLE</div>
+
+                    <h2>Six-Month Digital Twin Record</h2>
+
+                    <p class="section-subtitle">
+                        Values loaded directly from the
+                        twin_baseline.csv dataset.
+                    </p>
+
+                </div>
+
+                <a
+                    class="text-link"
+                    href="data/twin_baseline.csv"
+                    download
+                >
+                    Download Baseline ↗
+                </a>
+
+            </div>
+
+
+            <div class="panel table-panel">
+
+                <div class="table-scroll">
+
+                    <table>
+
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Rainfall (mm)</th>
+                                <th>Inflow (MCM)</th>
+                                <th>Release (MCM)</th>
+                                <th>Evaporation (MCM)</th>
+                                <th>Volume (MCM)</th>
+                                <th>Fullness (%)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="baselineTable">
+
+                            <tr>
+                                <td colspan="7">
+                                    Loading baseline data…
+                                </td>
+                            </tr>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             METHODOLOGY & LIMITATIONS
+        =========================================== -->
+        <section class="section" id="method">
+
+            <div class="section-heading">
+
+                <div>
+                    <div class="eyebrow">
+                        TRANSPARENCY & REPRODUCIBILITY
+                    </div>
+
+                    <h2>Methodology & Limitations</h2>
+                </div>
+
+            </div>
+
+
+            <div class="method-grid">
+
+                <article class="method-card">
+
+                    <span class="method-number">01</span>
+
+                    <h3>Satellite Observations</h3>
+
+                    <p>
+                        Monthly water extent is presented from
+                        Sentinel-2 optical and Sentinel-1 radar
+                        outputs. The dashboard visualises processed
+                        satellite results rather than reprocessing
+                        imagery in the browser.
+                    </p>
+
+                </article>
+
+
+                <article class="method-card">
+
+                    <span class="method-number">02</span>
+
+                    <h3>Rainfall Context</h3>
+
+                    <p>
+                        Rainfall and inflow are displayed from the
+                        six-month baseline dataset. They represent
+                        model inputs or outputs, not a live
+                        rainfall feed.
+                    </p>
+
+                </article>
+
+
+                <article class="method-card">
+
+                    <span class="method-number">03</span>
+
+                    <h3>Digital Twin Baseline</h3>
+
+                    <p>
+                        Storage, release and evaporation are shown
+                        as supplied scenario outputs. Assumptions
+                        and placeholder parameters may materially
+                        affect the results.
+                    </p>
+
+                </article>
+
+
+                <article class="method-card">
+
+                    <span class="method-number">04</span>
+
+                    <h3>Forecast & Model Limitations</h3>
+
+                    <p>
+                        Forecasts and GeoAI outputs depend on the
+                        supplied datasets and model assumptions.
+                        Predicted water extent is not equivalent
+                        to measured storage or a verified future
+                        reservoir condition.
+                    </p>
+
+                </article>
+
+            </div>
+
+
+            <!-- DISCLAIMER -->
+            <div class="disclaimer">
+
+                <b>Important Use Limitation</b>
+
+                <p>
+                    This portfolio demonstrator uses satellite-derived
+                    observations and simplified model outputs.
+                    Storage values are not measured reservoir levels.
+                    It must not be used for dam operations, flood
+                    warnings, water allocation, infrastructure safety
+                    or other operational decisions.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==========================================
+             FOOTER
+        =========================================== -->
+        <footer class="footer">
+
+            <div class="brand mini">
+
+                <span class="brand-mark">TV</span>
+
+                <span>
+                    <strong>TERRAVITA</strong>
+                    <small>
+                        ENVIRONMENTAL & GEOSPATIAL CONSULTANCY
+                    </small>
+                </span>
+
+            </div>
+
+            <span>
+                Satellite data → GIS → Modelling → Insights
+            </span>
+
+            <span>© 2026 TerraVita</span>
+
+        </footer>
+
+    </main>
 
 </div>
 
 
-<div id="toast" class="toast" role="status"></div>
+<!-- ==========================================
+     TOAST NOTIFICATION
+=========================================== -->
+<div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite"
+></div>
 
 
-<!-- LIBRARIES -->
+<!-- ==========================================
+     JAVASCRIPT LIBRARIES
+=========================================== -->
+
+<!-- Leaflet -->
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 
+<!-- PapaParse -->
 <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 
-<!-- DASHBOARD JAVASCRIPT -->
-<script src="app.js"></script>
+<!-- TerraVita Dashboard JavaScript -->
+<script src="app.js" defer></script>
 
 </body>
 </html>
