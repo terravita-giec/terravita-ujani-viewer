@@ -21,19 +21,24 @@
    1. CONFIGURATION
 ========================================================= */
 
+
 const CONFIG = {
   waterCSV: "data/water_extent_monthly.csv",
   baselineCSV: "data/twin_baseline.csv",
+  forecastCSV: "data/forecast_6month.csv",
+  modelCSV: "data/model_dataset.csv",
 
-  studyAreaGeoJSON: "data/study_area.geojson",
-  waterPolygonsGeoJSON: "data/water_extent_polygons.geojson",
+  studyAreaGeoJSON: "geo/study_area.geojson",
+  waterPolygonsGeoJSON: "geo/water_extent_polygons.geojson",
 
   reservoir: {
     name: "Ujani Reservoir",
     lat: 18.07,
     lng: 75.11,
     zoom: 10
-  },
+  }
+};
+
 
   colors: {
     teal: "#27d3c2",
